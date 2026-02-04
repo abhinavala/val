@@ -459,6 +459,23 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+.mobile-block {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.mobile-block-text {
+  color: #fff;
+  font-size: 1.6rem;
+  font-family: 'Georgia', serif;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+}
+
 /* Prevent pull-to-refresh and overscroll on mobile */
 html {
   overscroll-behavior: none;
