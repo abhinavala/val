@@ -1,38 +1,668 @@
-.App {
+/* Password Screen */
+.password-screen {
+  min-height: 100vh;
+  background-color: #4a4a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.password-question {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-family: 'Georgia', serif;
+}
+
+.password-input {
+  padding: 15px 25px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 25px;
+  outline: none;
+  width: 300px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.password-input:focus {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.submit-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 40px;
+  font-size: 1.1rem;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
 }
 
-.App-header {
-  background-color: #282c34;
+.submit-btn:hover {
+  background-color: #ff5252;
+  transform: scale(1.05);
+}
+
+.error-text {
+  color: #ff6b6b;
+  margin-top: 15px;
+  font-size: 1.1rem;
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* Access Granted Screen */
+.granted-screen {
   min-height: 100vh;
+  background-color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.granted-text {
+  font-size: 4rem;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+  animation: glow 1.5s ease-in-out infinite, fadeIn 0.5s ease-out;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; }
+  50% { text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00, 0 0 80px #00ff00; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Dialog Screen */
+.dialog-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-container {
+  text-align: center;
+  padding: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+}
+
+.dialog-text {
+  font-size: 2rem;
+  color: white;
+  font-family: 'Georgia', serif;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  animation: slideIn 0.5s ease-out;
+}
+
+.dialog-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.5s ease-out;
+  object-fit: cover;
+}
+
+.dialog-image--zoomed-out {
+  max-height: 240px;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.next-btn {
+  padding: 15px 50px;
+  font-size: 1.2rem;
+  background-color: white;
+  color: #764ba2;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: bold;
+}
+
+.next-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Question Screen */
+.question-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Frown Overlay */
+.frown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.frown-image {
+  max-width: 70vw;
+  max-height: 50vh;
+  margin-bottom: 30px;
+  animation: shake 0.5s ease-in-out;
+  border-radius: 15px;
+}
+
+.frown-text {
   color: white;
+  font-size: 1.8rem;
+  font-family: 'Georgia', serif;
+  text-align: center;
+  padding: 0 20px;
+  max-width: 500px;
+  line-height: 1.5;
 }
 
-.App-link {
-  color: #61dafb;
+/* Stop Overlay - Full screen image */
+.stop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  animation: fadeInOverlay 0.3s ease-out;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.stop-image {
+  max-width: 60vw;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 15px;
+}
+
+.stop-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-size: 8rem;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8), 0 0 40px red;
+  animation: pulseText 0.5s ease-in-out infinite;
+  text-align: center;
+}
+
+@keyframes pulseText {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Silly Overlay - When No button disappears */
+.silly-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background: #000;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+.silly-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.silly-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 3rem;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  padding: 20px;
+  max-width: 90%;
+  line-height: 1.4;
+}
+
+.valentine-question {
+  font-size: 3rem;
+  color: #d63384;
+  font-family: 'Georgia', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+  z-index: 10;
+}
+
+.button-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Side by side layout (initial state) */
+.button-container.side-by-side {
+  gap: 30px;
+}
+
+.button-container.side-by-side .yes-btn,
+.button-container.side-by-side .no-btn {
+  padding: 20px 50px;
+  font-size: 1.5rem;
+  border-radius: 30px;
+}
+
+/* After No button moves */
+.button-container.no-moved {
+  position: relative;
+}
+
+.yes-btn {
+  padding: 20px 50px;
+  font-size: 1.5rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+}
+
+.yes-btn:hover {
+  background-color: #218838;
+}
+
+.no-btn {
+  padding: 20px 50px;
+  font-size: 1.5rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: top 0.3s, left 0.3s;
+  z-index: 50;
+  box-shadow: 0 5px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* Only apply transform when button has moved */
+.button-container.no-moved .no-btn {
+  transform: translate(-50%, -50%);
+}
+
+/* Kiss Screen */
+.kiss-screen {
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kiss-video {
+  width: 100%;
+  height: 100%;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+/* Congratulations Screen */
+.congrats-screen {
+  min-height: 100vh;
+  background: url('./assets/collage.png') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: backgroundPulse 3s ease-in-out infinite;
+}
+
+@keyframes backgroundPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.1); }
+}
+
+.congrats-content {
+  text-align: center;
+  padding: 40px;
+}
+
+.congrats-title {
+  font-size: 5rem;
+  color: white;
+  font-family: 'Georgia', serif;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.hearts-container {
+  margin: 30px 0;
+}
+
+.heart {
+  font-size: 3rem;
+  margin: 0 10px;
+  display: inline-block;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.heart:nth-child(1) { animation-delay: 0s; }
+.heart:nth-child(2) { animation-delay: 0.1s; }
+.heart:nth-child(3) { animation-delay: 0.2s; }
+.heart:nth-child(4) { animation-delay: 0.3s; }
+.heart:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.congrats-text {
+  font-size: 2rem;
+  color: white;
+  font-family: 'Georgia', serif;
+  margin-top: 20px;
+}
+
+.congrats-subtext {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: 'Georgia', serif;
+  margin-top: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.55);
+}
+
+/* Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent pull-to-refresh and overscroll on mobile */
+html {
+  overscroll-behavior: none;
+}
+
+/* Make buttons easier to tap on mobile */
+button {
+  touch-action: manipulation;
+}
+
+/* Bee cursor - only for unlocked screens */
+.bee-cursor,
+.bee-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='18' rx='8' ry='10' fill='%23FFD700'/%3E%3Cellipse cx='16' cy='18' rx='8' ry='10' fill='none' stroke='%23000' stroke-width='1'/%3E%3Cline x1='8' y1='14' x2='24' y2='14' stroke='%23000' stroke-width='2'/%3E%3Cline x1='8' y1='18' x2='24' y2='18' stroke='%23000' stroke-width='2'/%3E%3Cline x1='8' y1='22' x2='24' y2='22' stroke='%23000' stroke-width='2'/%3E%3Ccircle cx='16' cy='8' r='5' fill='%23000'/%3E%3Cellipse cx='8' cy='10' rx='5' ry='3' fill='%23ADD8E6' opacity='0.7' transform='rotate(-30 8 10)'/%3E%3Cellipse cx='24' cy='10' rx='5' ry='3' fill='%23ADD8E6' opacity='0.7' transform='rotate(30 24 10)'/%3E%3Ccircle cx='14' cy='7' r='1' fill='white'/%3E%3Ccircle cx='18' cy='7' r='1' fill='white'/%3E%3C/svg%3E") 16 16, auto;
+}
+
+.bee-cursor button,
+.bee-cursor .next-btn,
+.bee-cursor .yes-btn,
+.bee-cursor .no-btn {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='18' rx='8' ry='10' fill='%23FFD700'/%3E%3Cellipse cx='16' cy='18' rx='8' ry='10' fill='none' stroke='%23000' stroke-width='1'/%3E%3Cline x1='8' y1='14' x2='24' y2='14' stroke='%23000' stroke-width='2'/%3E%3Cline x1='8' y1='18' x2='24' y2='18' stroke='%23000' stroke-width='2'/%3E%3Cline x1='8' y1='22' x2='24' y2='22' stroke='%23000' stroke-width='2'/%3E%3Ccircle cx='16' cy='8' r='5' fill='%23000'/%3E%3Cellipse cx='8' cy='10' rx='5' ry='3' fill='%23ADD8E6' opacity='0.7' transform='rotate(-30 8 10)'/%3E%3Cellipse cx='24' cy='10' rx='5' ry='3' fill='%23ADD8E6' opacity='0.7' transform='rotate(30 24 10)'/%3E%3Ccircle cx='14' cy='7' r='1' fill='white'/%3E%3Ccircle cx='18' cy='7' r='1' fill='white'/%3E%3C/svg%3E") 16 16, pointer;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  /* Password Screen */
+  .password-container {
+    padding: 20px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .password-question {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    padding: 0 10px;
+  }
+
+  .password-input {
+    width: 260px;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .submit-btn {
+    padding: 10px 35px;
+    font-size: 1rem;
+  }
+
+  /* Access Granted Screen */
+  .granted-text {
+    font-size: 2.5rem;
+    padding: 0 20px;
+  }
+
+  /* Dialog Screen */
+  .dialog-screen {
+    padding: 20px;
+  }
+
+  .dialog-container {
+    padding: 30px 20px;
+    margin: 0 15px;
+  }
+
+  .dialog-text {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+  }
+
+  .next-btn {
+    padding: 12px 40px;
+    font-size: 1rem;
+  }
+
+  .dialog-image {
+    max-height: 200px;
+    margin-bottom: 20px;
+  }
+
+  .dialog-image--zoomed-out {
+    max-height: 170px;
+  }
+
+  /* Frown Overlay */
+  .frown-image {
+    max-width: 80vw;
+    max-height: 40vh;
+    margin-bottom: 20px;
+  }
+
+  .frown-text {
+    font-size: 1.3rem;
+    padding: 0 15px;
+  }
+
+  /* Stop Overlay */
+  .stop-image {
+    max-width: 80vw;
+    max-height: 50vh;
+  }
+
+  .stop-text {
+    font-size: 4rem;
+  }
+
+  /* Silly Overlay */
+  .silly-text {
+    font-size: 1.8rem;
+  }
+
+  /* Question Screen */
+  .valentine-question {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .button-container {
+    height: 250px;
+  }
+
+  .button-container.side-by-side {
+    gap: 20px;
+  }
+
+  .button-container.side-by-side .yes-btn,
+  .button-container.side-by-side .no-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+  }
+
+  .yes-btn {
+    padding: 15px 35px;
+    font-size: 1.2rem;
+  }
+
+  .no-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+  }
+
+  /* Congratulations Screen */
+  .congrats-content {
+    padding: 20px;
+  }
+
+  .congrats-title {
+    font-size: 3.5rem;
+  }
+
+  .hearts-container {
+    margin: 20px 0;
+  }
+
+  .heart {
+    font-size: 2rem;
+    margin: 0 5px;
+  }
+
+  .congrats-text {
+    font-size: 1.4rem;
+  }
+
+  .congrats-subtext {
+    font-size: 1.1rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .password-question {
+    font-size: 1.2rem;
+  }
+
+  .password-input {
+    width: 220px;
+    font-size: 0.9rem;
+  }
+
+  .granted-text {
+    font-size: 2rem;
+  }
+
+  .dialog-text {
+    font-size: 1.2rem;
+  }
+
+  .valentine-question {
+    font-size: 1.5rem;
+  }
+
+  .congrats-title {
+    font-size: 2.5rem;
+  }
+
+  .heart {
+    font-size: 1.5rem;
+  }
+
+  .congrats-text {
+    font-size: 1.2rem;
+  }
+
+  .congrats-subtext {
+    font-size: 1rem;
   }
 }
