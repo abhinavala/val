@@ -1,11 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 
+const normalizeAnswer = (value) => value.trim().toLowerCase();
+
 function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [screen, setScreen] = useState('password');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const [riddleQuestion, setRiddleQuestion] = useState('Loading a new riddle...');
+  const [riddleSignature, setRiddleSignature] = useState('');
+  const [riddleHints, setRiddleHints] = useState([]);
+  const [riddleToken, setRiddleToken] = useState('');
+  const [riddleLoading, setRiddleLoading] = useState(true);
+  const [riddleError, setRiddleError] = useState('');
+  const [revealAnswer, setRevealAnswer] = useState('');
+  const [guessCount, setGuessCount] = useState(0);
+  const [hintMessage, setHintMessage] = useState('');
   const [noButtonMoved, setNoButtonMoved] = useState(false);
   const [noButtonPosition, setNoButtonPosition] = useState({ top: '50%', left: '60%' });
   const [yesButtonScale, setYesButtonScale] = useState(1);
@@ -25,14 +36,112 @@ function App() {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    const loadRiddle = async () => {
+      setRiddleLoading(true);
+      setRiddleError('');
+      try {
+        const response = await fetch('/api/riddle', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error('Failed to load riddle');
+        }
+        const data = await response.json();
+        if (!active) return;
+        setRiddleQuestion(data.question || 'Solve the riddle to continue.');
+        setRiddleSignature(data.signature || '');
+        setRiddleHints(Array.isArray(data.hints) ? data.hints : []);
+        setRiddleToken(data.token || '');
+        setRevealAnswer('');
+        setGuessCount(0);
+        setHintMessage('');
+      } catch (err) {
+        if (!active) return;
+        setRiddleQuestion('Hmm, unable to load a riddle right now.');
+        setRiddleError('Please refresh to try again.');
+        setRiddleSignature('');
+        setRiddleHints([]);
+        setRiddleToken('');
+        setRevealAnswer('');
+        setGuessCount(0);
+        setHintMessage('');
+      } finally {
+        if (active) {
+          setRiddleLoading(false);
+        }
+      }
+    };
+
+    loadRiddle();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if (password.toLowerCase() === 'buzz') {
-      setScreen('granted');
-    } else {
-      setError(true);
-      setTimeout(() => setError(false), 1000);
+    if (!riddleSignature || riddleLoading) return;
+    if (password === 'AbhiShreya4Eva') {
+      fetch('/api/reveal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          signature: riddleSignature,
+          token: riddleToken,
+          masterPassword: password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.answer) {
+            setRevealAnswer(data.answer);
+            setHintMessage('');
+          } else {
+            setRevealAnswer('');
+            setHintMessage('No answer available.');
+          }
+        })
+        .catch(() => {
+          setRevealAnswer('');
+          setHintMessage('No answer available.');
+        });
+      return;
     }
+    setError(false);
+    fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        answer: normalizeAnswer(password),
+        signature: riddleSignature,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.ok) {
+          setScreen('granted');
+        } else {
+          setError(true);
+          const nextCount = guessCount + 1;
+          setGuessCount(nextCount);
+          if (riddleHints.length && nextCount % 2 === 0) {
+            const hintIndex = Math.min(Math.floor(nextCount / 2) - 1, riddleHints.length - 1);
+            setHintMessage(`Hint: ${riddleHints[hintIndex]}`);
+          }
+          setTimeout(() => setError(false), 1000);
+        }
+      })
+      .catch(() => {
+        setError(true);
+        const nextCount = guessCount + 1;
+        setGuessCount(nextCount);
+        if (riddleHints.length && nextCount % 2 === 0) {
+          const hintIndex = Math.min(Math.floor(nextCount / 2) - 1, riddleHints.length - 1);
+          setHintMessage(`Hint: ${riddleHints[hintIndex]}`);
+        }
+        setTimeout(() => setError(false), 1000);
+      });
   };
 
   // Auto-advance from granted screen after 2 seconds
@@ -151,7 +260,7 @@ function App() {
     return (
       <div className="password-screen">
         <div className="password-container">
-          <h1 className="password-question">What sound does your bf make when he travels?</h1>
+          <h1 className="password-question">{riddleQuestion}</h1>
           <form onSubmit={handlePasswordSubmit}>
             <input
               type="text"
@@ -160,9 +269,15 @@ function App() {
               className={`password-input ${error ? 'shake' : ''}`}
               placeholder="Enter password..."
               autoFocus
+              disabled={riddleLoading}
             />
-            <button type="submit" className="submit-btn">Enter</button>
+            <button type="submit" className="submit-btn" disabled={riddleLoading || !riddleSignature}>
+              {riddleLoading ? 'Loading...' : 'Enter'}
+            </button>
           </form>
+          {riddleError && <p className="error-text">{riddleError}</p>}
+          {hintMessage && <p className="error-text">{hintMessage}</p>}
+          {revealAnswer && <p className="error-text">Answer: {revealAnswer}</p>}
           {error && <p className="error-text">Hmm, try again!</p>}
         </div>
       </div>
