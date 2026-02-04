@@ -75,6 +75,8 @@ export default async function handler(req, res) {
   const buildPrompt = (nonce) => {
     const lines = [
       'Create one short, clever riddle with a single-word or short-phrase answer.',
+      'Keep it easy to medium difficulty and friendly.',
+      'Do not include any numbers, math, or equations.',
       'Provide three hints that get progressively more obvious.',
       'Return ONLY valid JSON with keys: question, answer, hints (array of 3 strings).',
       'Avoid offensive content.',

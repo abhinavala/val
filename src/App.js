@@ -4,7 +4,6 @@ import './App.css';
 const normalizeAnswer = (value) => value.trim().toLowerCase();
 
 function App() {
-  const [isMobile, setIsMobile] = useState(false);
   const [screen, setScreen] = useState('password');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
@@ -26,15 +25,6 @@ function App() {
   const [showSillyOverlay, setShowSillyOverlay] = useState(false);
   const [sillyShown, setSillyShown] = useState(false);
   const kissVideoRef = useRef(null);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    return () => window.removeEventListener('resize', checkIsMobile);
-  }, []);
 
   useEffect(() => {
     let active = true;
@@ -246,14 +236,6 @@ function App() {
       playPromise.catch(() => {});
     }
   };
-
-  if (isMobile) {
-    return (
-      <div className="mobile-block">
-        <p className="mobile-block-text">Open on a Computer Pleasee</p>
-      </div>
-    );
-  }
 
   // Password Screen
   if (screen === 'password') {
